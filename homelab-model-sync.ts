@@ -1,6 +1,7 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
-const BASE_URL = "http://localhost:8080";
+const DEFAULT_BASE_URL = "http://localhost:8080";
+const BASE_URL = process.env.HOMELAB_URL ?? DEFAULT_BASE_URL;
 const PROVIDER_ID = "llama-homelab";
 const MODEL_ID = "homelab-gpu";
 const FETCH_TIMEOUT_MS = 5_000;
