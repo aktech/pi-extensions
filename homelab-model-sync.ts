@@ -1,7 +1,6 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
-const DEFAULT_BASE_URL = "http://localhost:8080";
-const BASE_URL = process.env.HOMELAB_URL ?? DEFAULT_BASE_URL;
+const BASE_URL = process.env.HOMELAB_URL;
 const PROVIDER_ID = "llama-homelab";
 const MODEL_ID = "homelab-gpu";
 const FETCH_TIMEOUT_MS = 5_000;
@@ -20,6 +19,11 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("session_start", async (_event, ctx) => {
     if (registered) return;
+
+    if (!BASE_URL) {
+      ctx.ui.notify("Homelab: HOMELAB_URL not set, skipping", "warn");
+      return;
+    }
 
     try {
       const controller = new AbortController();
