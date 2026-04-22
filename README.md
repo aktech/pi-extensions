@@ -6,9 +6,9 @@ Extensions for [`@mariozechner/pi-coding-agent`](https://www.npmjs.com/package/@
 
 ## Extensions
 
-- **`homelab-model-sync.ts`** — Auto-registers a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `pi` provider at session start. Set `HOMELAB_URL` to your server.
-- **`cloudflare-ai.ts`** — Adds [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) as a `/login` provider, exposing all Text Generation models via the OpenAI-compatible endpoint.
-- **`prompt-char.ts`** — Adds a `❯` prefix to the editor input line.
+- **`homelab-model-sync`** — Auto-registers a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `pi` provider at session start. Set `HOMELAB_URL` to your server.
+- **`cloudflare-ai`** — Adds [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) as a `/login` provider, exposing all Text Generation models via the OpenAI-compatible endpoint.
+- **`prompt-char`** — Adds a `❯` prefix to the editor input line.
 
 ## Install
 
