@@ -58,7 +58,9 @@ function modelSearchUrl(accountId: string): string {
 // (captured 2026-04-22). Cloudflare bills in neurons; this table translates the
 // published neuron-based prices to $/M-token rates pi can render. Models not
 // listed fall back to zero (free-tier or unpublished pricing).
-const PRICING_PER_M_TOKENS: Record<string, { input: number; output: number }> = {
+type ModelPrice = { input: number; output: number; cacheRead?: number };
+
+const PRICING_PER_M_TOKENS: Record<string, ModelPrice> = {
   "@cf/meta/llama-3.2-1b-instruct": { input: 0.027, output: 0.201 },
   "@cf/meta/llama-3.2-3b-instruct": { input: 0.051, output: 0.335 },
   "@cf/meta/llama-3.1-8b-instruct-fp8-fast": { input: 0.045, output: 0.384 },
@@ -87,13 +89,13 @@ const PRICING_PER_M_TOKENS: Record<string, { input: number; output: number }> = 
   "@cf/ibm-granite/granite-4.0-h-micro": { input: 0.017, output: 0.112 },
   "@cf/zai-org/glm-4.7-flash": { input: 0.060, output: 0.400 },
   "@cf/nvidia/nemotron-3-120b-a12b": { input: 0.500, output: 1.500 },
-  "@cf/moonshotai/kimi-k2.5": { input: 0.600, output: 3.000 },
-  "@cf/moonshotai/kimi-k2.6": { input: 0.950, output: 4.000 },
+  "@cf/moonshotai/kimi-k2.5": { input: 0.600, output: 3.000, cacheRead: 0.100 },
+  "@cf/moonshotai/kimi-k2.6": { input: 0.950, output: 4.000, cacheRead: 0.160 },
 };
 
-const ZERO_PRICE = { input: 0, output: 0 };
+const ZERO_PRICE: ModelPrice = { input: 0, output: 0 };
 
-function priceFor(modelId: string): { input: number; output: number } {
+function priceFor(modelId: string): ModelPrice {
   return PRICING_PER_M_TOKENS[modelId] ?? ZERO_PRICE;
 }
 
@@ -124,7 +126,7 @@ function toPiModel(m: CfModel & { name: string }): PiModelConfig {
     name: shortName(m.name),
     reasoning: false,
     input: isVision(m.name) ? ["text", "image"] : ["text"],
-    cost: { input: price.input, output: price.output, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: price.input, output: price.output, cacheRead: price.cacheRead ?? 0, cacheWrite: 0 },
     contextWindow,
     maxTokens,
     compat: { supportsDeveloperRole: false, supportsReasoningEffort: false },
