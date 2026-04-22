@@ -1,5 +1,7 @@
 # pi-extensions
 
+[![CI](https://github.com/aktech/pi-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/aktech/pi-extensions/actions/workflows/ci.yml)
+
 Extensions for [`@mariozechner/pi-coding-agent`](https://www.npmjs.com/package/@mariozechner/pi-coding-agent).
 
 ## Extensions

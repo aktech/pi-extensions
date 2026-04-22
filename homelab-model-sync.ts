@@ -21,7 +21,7 @@ export default function (pi: ExtensionAPI) {
     if (registered) return;
 
     if (!BASE_URL) {
-      ctx.ui.notify("Homelab: HOMELAB_URL not set, skipping", "warn");
+      ctx.ui.notify("Homelab: HOMELAB_URL not set, skipping", "warning");
       return;
     }
 
@@ -52,10 +52,6 @@ export default function (pi: ExtensionAPI) {
         baseUrl: `${BASE_URL}/v1`,
         api: "openai-completions" as const,
         apiKey: "not-needed",
-        compat: {
-          supportsDeveloperRole: false,
-          supportsReasoningEffort: false,
-        },
         models: [
           {
             id: MODEL_ID,
@@ -65,6 +61,10 @@ export default function (pi: ExtensionAPI) {
             cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
             contextWindow: ctxSize,
             maxTokens: Math.min(Math.floor(ctxSize / 2), MAX_TOKENS_CAP),
+            compat: {
+              supportsDeveloperRole: false,
+              supportsReasoningEffort: false,
+            },
           },
         ],
       });
@@ -73,7 +73,7 @@ export default function (pi: ExtensionAPI) {
       ctx.ui.notify(`Homelab: ${displayName} (${ctxK}K ctx)`, "info");
     } catch (err) {
       const message = err instanceof Error ? err.message : "server unreachable";
-      ctx.ui.notify(`Homelab GPU: ${message}`, "warn");
+      ctx.ui.notify(`Homelab GPU: ${message}`, "warning");
     }
   });
 }
