@@ -4,6 +4,8 @@
 
 Personal set of extensions I use with [`@mariozechner/pi-coding-agent`](https://www.npmjs.com/package/@mariozechner/pi-coding-agent).
 
+![pi with cloudflare-ai extension](docs/pi-cloudflare-ai.png)
+
 ## Extensions
 
 - **`homelab-model-sync`** — Auto-registers a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `pi` provider at session start. Set `HOMELAB_URL` to your server.
