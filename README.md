@@ -14,6 +14,27 @@ Auto-register a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `
 export HOMELAB_URL=http://your-server:8080   # default: http://localhost:8080
 ```
 
+### `cloudflare-ai.ts`
+
+Add [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) as a `/login` provider in `pi`. After login, fetches your full list of Text Generation models from Cloudflare's [models search API](https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/) and exposes them via the [OpenAI-compatible endpoint](https://developers.cloudflare.com/workers-ai/configuration/open-ai-compatibility/), so any model (e.g. `@cf/moonshotai/kimi-k2.5`, `@cf/meta/llama-3.3-70b-instruct-fp8-fast`) is usable.
+
+**Setup:**
+
+1. Create an API token at [dash.cloudflare.com → My Profile → API Tokens](https://dash.cloudflare.com/profile/api-tokens) with `Workers AI — Read` + `Workers AI — Edit`. Copy your Account ID from the dashboard right-hand sidebar.
+2. In `pi`:
+   ```
+   /login cloudflare
+   ```
+   When prompted, enter `<account_id>:<api_token>` (colon-separated).
+3. Pick a model:
+   ```
+   pi --provider cloudflare --model @cf/moonshotai/kimi-k2.5
+   ```
+
+Credentials persist in `~/.pi/agent/auth.json`. Clear with `/logout cloudflare`.
+
+> Note: pi persists login-sourced credentials as `type:"oauth"` regardless of the actual auth scheme — it's pi's internal label for anything acquired through the `/login` flow, not an assertion that Cloudflare uses real OAuth (it doesn't for third-party tools).
+
 ### `prompt-char.ts`
 
 Add a `❯` prefix to the editor input line.
