@@ -52,6 +52,51 @@ function modelSearchUrl(accountId: string): string {
   return url.toString();
 }
 
+// --- Pricing ---------------------------------------------------------------
+
+// USD per million tokens, from https://developers.cloudflare.com/workers-ai/platform/pricing/
+// (captured 2026-04-22). Cloudflare bills in neurons; this table translates the
+// published neuron-based prices to $/M-token rates pi can render. Models not
+// listed fall back to zero (free-tier or unpublished pricing).
+const PRICING_PER_M_TOKENS: Record<string, { input: number; output: number }> = {
+  "@cf/meta/llama-3.2-1b-instruct": { input: 0.027, output: 0.201 },
+  "@cf/meta/llama-3.2-3b-instruct": { input: 0.051, output: 0.335 },
+  "@cf/meta/llama-3.1-8b-instruct-fp8-fast": { input: 0.045, output: 0.384 },
+  "@cf/meta/llama-3.2-11b-vision-instruct": { input: 0.049, output: 0.676 },
+  "@cf/meta/llama-3.1-70b-instruct-fp8-fast": { input: 0.293, output: 2.253 },
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast": { input: 0.293, output: 2.253 },
+  "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b": { input: 0.497, output: 4.881 },
+  "@cf/mistral/mistral-7b-instruct-v0.1": { input: 0.110, output: 0.190 },
+  "@cf/mistralai/mistral-small-3.1-24b-instruct": { input: 0.351, output: 0.555 },
+  "@cf/meta/llama-3.1-8b-instruct": { input: 0.282, output: 0.827 },
+  "@cf/meta/llama-3.1-8b-instruct-fp8": { input: 0.152, output: 0.287 },
+  "@cf/meta/llama-3.1-8b-instruct-awq": { input: 0.123, output: 0.266 },
+  "@cf/meta/llama-3-8b-instruct": { input: 0.282, output: 0.827 },
+  "@cf/meta/llama-3-8b-instruct-awq": { input: 0.123, output: 0.266 },
+  "@cf/meta/llama-2-7b-chat-fp16": { input: 0.556, output: 6.667 },
+  "@cf/meta/llama-guard-3-8b": { input: 0.484, output: 0.030 },
+  "@cf/meta/llama-4-scout-17b-16e-instruct": { input: 0.270, output: 0.850 },
+  "@cf/google/gemma-3-12b-it": { input: 0.345, output: 0.556 },
+  "@cf/google/gemma-4-26b-a4b-it": { input: 0.100, output: 0.300 },
+  "@cf/qwen/qwq-32b": { input: 0.660, output: 1.000 },
+  "@cf/qwen/qwen2.5-coder-32b-instruct": { input: 0.660, output: 1.000 },
+  "@cf/qwen/qwen3-30b-a3b-fp8": { input: 0.051, output: 0.335 },
+  "@cf/openai/gpt-oss-120b": { input: 0.350, output: 0.750 },
+  "@cf/openai/gpt-oss-20b": { input: 0.200, output: 0.300 },
+  "@cf/aisingapore/gemma-sea-lion-v4-27b-it": { input: 0.351, output: 0.555 },
+  "@cf/ibm-granite/granite-4.0-h-micro": { input: 0.017, output: 0.112 },
+  "@cf/zai-org/glm-4.7-flash": { input: 0.060, output: 0.400 },
+  "@cf/nvidia/nemotron-3-120b-a12b": { input: 0.500, output: 1.500 },
+  "@cf/moonshotai/kimi-k2.5": { input: 0.600, output: 3.000 },
+  "@cf/moonshotai/kimi-k2.6": { input: 0.950, output: 4.000 },
+};
+
+const ZERO_PRICE = { input: 0, output: 0 };
+
+function priceFor(modelId: string): { input: number; output: number } {
+  return PRICING_PER_M_TOKENS[modelId] ?? ZERO_PRICE;
+}
+
 // --- Model mapping ---------------------------------------------------------
 
 const isVision = (name: string): boolean => /vision|llava|-vl-|multimodal/i.test(name);
@@ -73,12 +118,13 @@ function toPiModel(m: CfModel & { name: string }): PiModelConfig {
   const maxTokens =
     propInt(m.properties, "max_output_tokens") ??
     Math.min(Math.floor(contextWindow / 2), MAX_OUTPUT_CAP);
+  const price = priceFor(m.name);
   return {
     id: m.name,
     name: shortName(m.name),
     reasoning: false,
     input: isVision(m.name) ? ["text", "image"] : ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: price.input, output: price.output, cacheRead: 0, cacheWrite: 0 },
     contextWindow,
     maxTokens,
     compat: { supportsDeveloperRole: false, supportsReasoningEffort: false },
