@@ -54,11 +54,17 @@ function modelSearchUrl(accountId: string): string {
 
 // --- Pricing ---------------------------------------------------------------
 
-// USD per million tokens, from https://developers.cloudflare.com/workers-ai/platform/pricing/
-// (captured 2026-04-22). Cloudflare bills in neurons; this table translates the
-// published neuron-based prices to $/M-token rates pi can render. Models not
-// listed fall back to zero (free-tier or unpublished pricing).
-type ModelPrice = { input: number; output: number; cacheRead?: number };
+// USD per million tokens for text-generation models, from
+// https://developers.cloudflare.com/workers-ai/platform/pricing/
+// (captured 2026-04-22).
+//
+// Caveats — treat the cost pi displays as an estimate, not a bill:
+//   - Cloudflare bills in "neurons" and updates the $/token view periodically;
+//     this table drifts until manually refreshed.
+//   - Cache-read pricing (k2.5/k2.6 have discounted rates) is NOT modeled.
+//     All cached input tokens are charged at the regular input rate.
+//   - Models not listed (free-tier, embeddings, unpublished) fall back to zero.
+type ModelPrice = { input: number; output: number };
 
 const PRICING_PER_M_TOKENS: Record<string, ModelPrice> = {
   "@cf/meta/llama-3.2-1b-instruct": { input: 0.027, output: 0.201 },
@@ -89,8 +95,8 @@ const PRICING_PER_M_TOKENS: Record<string, ModelPrice> = {
   "@cf/ibm-granite/granite-4.0-h-micro": { input: 0.017, output: 0.112 },
   "@cf/zai-org/glm-4.7-flash": { input: 0.060, output: 0.400 },
   "@cf/nvidia/nemotron-3-120b-a12b": { input: 0.500, output: 1.500 },
-  "@cf/moonshotai/kimi-k2.5": { input: 0.600, output: 3.000, cacheRead: 0.100 },
-  "@cf/moonshotai/kimi-k2.6": { input: 0.950, output: 4.000, cacheRead: 0.160 },
+  "@cf/moonshotai/kimi-k2.5": { input: 0.600, output: 3.000 },
+  "@cf/moonshotai/kimi-k2.6": { input: 0.950, output: 4.000 },
 };
 
 const ZERO_PRICE: ModelPrice = { input: 0, output: 0 };
@@ -126,7 +132,7 @@ function toPiModel(m: CfModel & { name: string }): PiModelConfig {
     name: shortName(m.name),
     reasoning: false,
     input: isVision(m.name) ? ["text", "image"] : ["text"],
-    cost: { input: price.input, output: price.output, cacheRead: price.cacheRead ?? 0, cacheWrite: 0 },
+    cost: { input: price.input, output: price.output, cacheRead: 0, cacheWrite: 0 },
     contextWindow,
     maxTokens,
     compat: { supportsDeveloperRole: false, supportsReasoningEffort: false },
