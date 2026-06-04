@@ -10,7 +10,8 @@
     "extensions": [
       "extensions/cloudflare-ai.ts",
       "extensions/homelab-model-sync.ts",
-      "extensions/prompt-char.ts"
+      "extensions/prompt-char.ts",
+      "extensions/tps.ts"
     ]
   },
   "devDependencies": {

@@ -55,7 +55,7 @@ export default function (pi: ExtensionAPI) {
         models: [
           {
             id: MODEL_ID,
-            name: `${displayName} (${ctxK}K)`,
+            name: `@aktech/london-rtx3090-${displayName} (${ctxK}K)`,
             reasoning: false,
             input: ["text", "image"],
             cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
