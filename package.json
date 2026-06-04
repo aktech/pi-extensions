@@ -8,15 +8,14 @@
   },
   "pi": {
     "extensions": [
-      "extensions/cloudflare-ai.ts",
       "extensions/homelab-model-sync.ts",
       "extensions/prompt-char.ts",
       "extensions/tps.ts"
     ]
   },
   "devDependencies": {
-    "@mariozechner/pi-ai": "0.69.0",
-    "@mariozechner/pi-coding-agent": "0.69.0",
+    "@earendil-works/pi-ai": "0.78.0",
+    "@earendil-works/pi-coding-agent": "0.78.0",
     "@types/node": "25.6.0",
     "typescript": "6.0.3"
   }

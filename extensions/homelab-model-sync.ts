@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const BASE_URL = process.env.HOMELAB_URL;
 const PROVIDER_ID = "llama-homelab";
