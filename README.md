@@ -2,14 +2,11 @@
 
 [![CI](https://github.com/aktech/pi-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/aktech/pi-extensions/actions/workflows/ci.yml)
 
-Personal set of extensions I use with [`@mariozechner/pi-coding-agent`](https://www.npmjs.com/package/@mariozechner/pi-coding-agent).
-
-![pi with cloudflare-ai extension](docs/pi-cloudflare-ai.png)
+Personal set of extensions I use with [`pi`](https://github.com/earendil-works/pi).
 
 ## Extensions
 
 - **`homelab-model-sync`** — Auto-registers a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `pi` provider at session start. Set `HOMELAB_URL` to your server.
-- **`cloudflare-ai`** — Adds [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) as a `/login` provider, exposing all Text Generation models via the OpenAI-compatible endpoint. Ships a static $/M-token price table so pi's cost footer is populated; treat it as an estimate — the table drifts when Cloudflare updates pricing and does not model cache-read discounts (k2.5/k2.6).
 - **`prompt-char`** — Adds a `❯` prefix to the editor input line.
 
 ## Install

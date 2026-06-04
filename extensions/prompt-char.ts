@@ -1,4 +1,4 @@
-import { CustomEditor } from "@mariozechner/pi-coding-agent";
+import { CustomEditor } from "@earendil-works/pi-coding-agent";
 
 class PromptCharEditor extends CustomEditor {
   // Override setPaddingX to enforce minimum of 2 for prompt char
