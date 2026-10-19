@@ -8,6 +8,7 @@ Personal set of extensions I use with [`pi`](https://github.com/earendil-works/p
 
 - **`homelab-model-sync`** — Auto-registers a self-hosted `llama.cpp` (or any OpenAI-compatible) server as a `pi` provider at session start. Set `HOMELAB_URL` to your server.
 - **`prompt-char`** — Adds a `❯` prefix to the editor input line.
+- **`subagent`** - Pi's subagent tool (single, parallel, chain) with at most 2 subagents running at once, the most a single RTX 3090 serving Qwen3.8-27B handles usefully. Agent definitions are in `agents/` (link them to `~/.pi/agent/agents`); `/implement`, `/scout-and-plan` and `/implement-and-review` are in `prompts/`.
 
 ## Install
 
