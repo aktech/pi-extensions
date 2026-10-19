@@ -20,10 +20,8 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     if (registered) return;
 
-    if (!BASE_URL) {
-      ctx.ui.notify("Homelab: HOMELAB_URL not set, skipping", "warning");
-      return;
-    }
+    // Opt-in: without HOMELAB_URL there is nothing to sync.
+    if (!BASE_URL) return;
 
     try {
       const controller = new AbortController();
