@@ -4,14 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test extensions/*.test.ts"
   },
   "pi": {
     "extensions": [
       "extensions/homelab-model-sync.ts",
       "extensions/prompt-char.ts",
       "extensions/tps.ts",
-      "extensions/subagent/index.ts"
+      "extensions/subagent/index.ts",
+      "extensions/web-scope.ts"
     ],
     "prompts": [
       "prompts/*.md"
